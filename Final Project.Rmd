@@ -1,6 +1,6 @@
 ---
 title: "Final Project"
-author: "Anna Repesh & Bella"
+author: "Anna Repesh & Bella Mahmoud"
 date: "10/13/2021"
 output: html_document
 ---
