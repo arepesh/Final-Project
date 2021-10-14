@@ -7,23 +7,23 @@ output: html_document
 
 ```{r load_packages, message = FALSE}
 knitr::opts_chunk$set(error = TRUE)
-
 library(tidyverse)
 ```
 
 ## Project Proposal
 
-
+## Original Data
 ```{r load_data, message=FALSE}
 Birth <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
-View(Birth)
+
 ```
 
-## Data to be used
+## Filtered Data for Project
 
 ```{r edited data}
 Birth2 <- Birth %>%
   select("state", "year", "pregnancyrate2024" : "pregnancyrate3539")
-View(Birth2)
-```
+Birth2 %>%
+ DT::datatable()
+```  
 
