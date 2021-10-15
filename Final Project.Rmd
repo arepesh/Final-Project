@@ -19,7 +19,7 @@ A common headline seen today is that millennials are choosing to have children l
 
 Our project will look at pregnancy rates by states between the years of 2000-2017 for age groups 20-24, 25-29, 30-34, and 35-39. Our goal is to evaluate if people are getting pregnant later in life than in the early 2000s. Our findings will hopefully support the statement that people are opting to have children later in life. 
 
-We will create a website with graphics for our project. Specifically, we aim to have line graph(s) that will depict the trend of pregnancy rates (by state?) over a 17 year period and bar graphs that will show the difference in pregnancy rates for the years 2000 and 2017 for the age groups 20-24, 25-29, 30-34, and 35-39.
+We will create a website with graphics for our project. Specifically, we aim to have line graph(s) that will depict the trend of pregnancy rates (?by state?) over a 17 year period and bar graphs that will show the difference in pregnancy rates for the years 2000 and 2017 for the age groups 20-24, 25-29, 30-34, and 35-39.
 
 Phan, L. (2013). Women’s empowerment and fertility changes. International Journal of Sociology of the Family, 39(1/2), 49–75.
 ```{r load_data, message=FALSE}
