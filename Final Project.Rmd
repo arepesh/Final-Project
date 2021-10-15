@@ -7,12 +7,12 @@ output: html_document
 
 ```{r load_packages, message = FALSE}
 knitr::opts_chunk$set(error = TRUE)
-
 library(tidyverse)
 ```
 
 ## Project Proposal
 
+<<<<<<< HEAD
 Are people getting pregnant later in life?
 
 A common headline seen today is that millennials are choosing to have children later in life. Years ago, it was common for people to have children in their 20s, but nowadays, it is being seen that as people further their education and participate in the workforce, having children becomes less of a focus (Phan 2013). 
@@ -22,16 +22,20 @@ Our project will look at pregnancy rates by states between the years of 2000-201
 We will create a website with graphics for our project. Specifically, we aim to have line graph(s) that will depict the trend of pregnancy rates (?by state?) over a 17 year period and bar graphs that will show the difference in pregnancy rates for the years 2000 and 2017 for the age groups 20-24, 25-29, 30-34, and 35-39.
 
 Phan, L. (2013). Women’s empowerment and fertility changes. International Journal of Sociology of the Family, 39(1/2), 49–75.
+=======
+## Original Data
+>>>>>>> 4724aef8e594c1ad4106e9ec14fb2ba71cbbbcf4
 ```{r load_data, message=FALSE}
 Birth <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
-View(Birth)
+
 ```
 
-## Data to be used
+## Filtered Data for Project
 
 ```{r edited data}
 Birth2 <- Birth %>%
   select("state", "year", "pregnancyrate2024" : "pregnancyrate3539")
-View(Birth2)
-```
+Birth2 %>%
+ DT::datatable()
+```  
 
