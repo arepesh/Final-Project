@@ -71,3 +71,9 @@ Pivot_Birth %>%
   ggplot(aes(x= Group, y= Rate, fill = Group)) +
   geom_col()
 ```
+
+
+```{r}
+Regions <- data.frame(Northeast = c("ME", "MA", "RI", ""))
+```
+
