@@ -44,17 +44,11 @@ Birth2 %>%
 ```  
 
 ```{r}
-Birth2 %>% 
- ggplot(aes(x = year, y = pregnancyrate2529, color = state)) +
-  geom_line() +
-  geom_point() 
-```
-```{r}
 Pivot_Birth <- Birth2 %>%
   pivot_longer(!state:year, names_to = "Group", values_to = "Rate")
 
-View(Pivot_Birth)
 ```
+
 
 ```{r}
 Pivot_Birth %>%
@@ -62,18 +56,40 @@ Pivot_Birth %>%
   summarise(Rate_avg = mean(Rate)) %>%
   ggplot(aes(x = year, y = Rate_avg, color= Group)) +
   geom_point() +
-  geom_line()
+  geom_line() +
+  labs(x = "Year",
+       y= "Average pregnancy rates",
+       title = "Average pregnancy rates by year in the United States from 2000-2017",
+       caption = "*Rates are per 1,000 women",
+       tag = "Fig. 3")
 ```
 
 ```{r}
 Pivot_Birth %>%
   filter(year == 2000) %>%
   ggplot(aes(x= Group, y= Rate, fill = Group)) +
-  geom_col()
+  geom_col() +
+  scale_x_discrete(labels=c("20-24", "25-29", "30-34", "35-39")) +
+  labs(x = "Age groups",
+       y= "Pregnancy rates",
+       title = "Total pregnancy rates by age for the year 2000 in the United States",
+       caption = "*Rates are per 50,000 women",
+       tag = "Fig. 1")  +
+  theme(axis.text.x = element_text(angle = 60, size=12, hjust = 1))
 ```
-
 
 ```{r}
-Regions <- data.frame(Northeast = c("ME", "MA", "RI", ""))
+Pivot_Birth %>%
+  filter(year == 2017) %>%
+  ggplot(aes(x= Group, y= Rate, fill = Group)) +
+  geom_col() +
+  scale_x_discrete(labels=c("20-24", "25-29", "30-34", "35-39")) +
+  labs(x = "Age groups",
+       y= "Pregnancy rates",
+       title = "Total pregnancy rates by age for the year 2017 in the United States",
+       caption = "*Rates are per 50,000 women",
+       tag = "Fig. 2")  +
+  theme(axis.text.x = element_text(angle = 60, size=12, hjust = 1))
 ```
+
 
