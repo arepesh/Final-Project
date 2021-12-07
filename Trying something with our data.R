@@ -12,7 +12,8 @@ library(RColorBrewer)
 birthrate <- read_csv("~/STA518/Final-Project/NationalAndStatePregnancy_PublicUse.csv") %>%
   select("state", "year", "pregnancyrate2024") %>%
   filter(year == 2000, state != "US" & state != "DC")
-birthrate <- rename(birthrate, "STUSPS" = "state")
+
+head(birthrate)
 
 #get the map centered over the united states (the provider$CartonDB tells what style of map we are looking at)
 m <- leaflet() %>%
@@ -36,17 +37,17 @@ m <- leaflet() %>%
 m
 
 #checking to see if both elements are names the same
-is.element(birthrate$STUSPS, states$STUSPS) %>%
+is.element(birthrate$state, states$STUSPS) %>%
   all()
 
 #merging the two data sets
-states <- merge(birthrate, states, by = 'STUSPS', all.x = FALSE)
+states <- merge(states, birthrate, by.x = 'STUSPS', by.y = 'state', all.x = F)
 
 #color for contunuout values
 paletteNum <- colorNumeric('Blues', domain = states$pregnancyrate2024)
 
 #making the color range
-costBins <- c(61.5:225.8, Inf)
+costBins <- c(7:19, Inf)
 paletteBinned <- colorBin('YlGnBu', domain = states$pregnancyrate2024, bins = costBins)
 
 #making the map
@@ -73,7 +74,7 @@ m <- leaflet() %>%
 m
 
 #adding labels to the states
-stateLabels <- sprintf('<b>%s</b><br/>%g cents/kWh',
+stateLabels <- sprintf('<b>%s</b><br/>%g pregnancyrate2024',
                        states$STUSPS, states$pregnancyrate2024) %>%
   lapply(function(x) HTML(x))
 
@@ -100,9 +101,6 @@ m <- leaflet() %>%
   ) %>%
   addLegend(pal = paletteNum, 
             values = states$pregnancyrate2024, 
-            title = '<small>2018 Avg. Electricity Cost<br>(cents/kWh | source: US EIA)</small>',
+            title = '<small> pregnancy rate </small>',
             position = 'bottomleft')
 m
-
-
-
