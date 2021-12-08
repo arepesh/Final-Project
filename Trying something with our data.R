@@ -8,88 +8,51 @@ library(htmltools)
 library(htmlwidgets)
 library(stringi)
 library(RColorBrewer)
+library(raster)
 
-birthrate <- read_csv("~/STA518/Final-Project/NationalAndStatePregnancy_PublicUse.csv") %>%
-  select("state", "year", "pregnancyrate2024") %>%
+birthratemap1 <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
+
+birthratemap1 <- birthratemap1 %>%
+  dplyr::select("state", "year", "pregnancyrate2024") %>%
   filter(year == 2000, state != "US" & state != "DC")
 
-head(birthrate)
-
-#get the map centered over the united states (the provider$CartonDB tells what style of map we are looking at)
-m <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.PositronNoLabels)  %>%
-  setView(lng = -96.25, lat = 39.50, zoom = 4)
-m
-
-# unziping file
-zipF<- file.choose()
-outDir <- "C:\\Documents\\STA518"
-unzip(zipF,exdir= outDir)
+head(birthrate1)
 
 #this is the shape file so that leaflet can read where the states are.
-states <- readOGR('C:\\Documents\\STA518\\cb_2019_us_state_5m.shp')
 
-#adding lines around the map
-m <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.PositronNoLabels)  %>%
-  setView(lng = -96.25, lat = 39.50, zoom = 4) %>%
-  addPolygons(data = states, weight = 1)
-m
+statesmap1 <- shapefile(here::here("cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
 
 #checking to see if both elements are names the same
-is.element(birthrate$state, states$STUSPS) %>%
+is.element(birthratemap1$state, statesmap1$STUSPS) %>%
   all()
 
 #merging the two data sets
-states <- merge(states, birthrate, by.x = 'STUSPS', by.y = 'state', all.x = F)
+statesmap1 <- merge(statesmap1, birthratemap1, by.x = 'STUSPS', by.y = 'state', all.x = F)
 
 #color for contunuout values
-paletteNum <- colorNumeric('Blues', domain = states$pregnancyrate2024)
+paletteNum <- colorNumeric('Blues', domain = statesmap1$pregnancyrate2024)
 
 #making the color range
 costBins <- c(7:19, Inf)
-paletteBinned <- colorBin('YlGnBu', domain = states$pregnancyrate2024, bins = costBins)
-
-#making the map
-m <- leaflet() %>%
-  addProviderTiles(providers$CartoDB.PositronNoLabels)  %>%
-  setView(lng = -96.25, lat = 39.50, zoom = 4) %>%
-  addPolygons(data = states,
-              
-              # state border stroke color
-              color = 'white', 
-              
-              # soften the weight of the state borders
-              weight = 1, 
-              
-              # values >1 simplify the polygons' lines for less detail but faster loading
-              smoothFactor = .3, 
-              
-              # set opacity of polygons
-              fillOpacity = .95, 
-              
-              # specify that the each state should be colored per paletteNum()
-              fillColor = ~paletteNum(states$pregnancyrate2024))
-
-m
+paletteBinned <- colorBin('YlGnBu', domain = statesmap1$pregnancyrate2024, bins = costBins)
 
 #adding labels to the states
 stateLabels <- sprintf('<b>%s</b><br/>%g pregnancyrate2024',
-                       states$STUSPS, states$pregnancyrate2024) %>%
+                       statesmap1$STUSPS, statesmap1$pregnancyrate2024) %>%
   lapply(function(x) HTML(x))
 
-states <- cbind(states, matrix(stateLabels, ncol = 1, dimnames = list(c(), c('stateLabels'))))
+states <- cbind(statesmap1, matrix(stateLabels, ncol = 1, dimnames = list(c(), c('stateLabels'))))
 
 #final map fingers crossed 
-m <- leaflet() %>%
+map <- leaflet() %>%
   addProviderTiles(providers$CartoDB.PositronNoLabels) %>%
   setView(lng = -96.25, lat = 39.50, zoom = 3.5) %>%
-  addPolygons(data = states,
+  addPolygons(data = statesmap1,
               color = 'white',
               weight = 1,
               smoothFactor = .3,
               fillOpacity = .75,
-              fillColor = ~paletteNum(states$pregnancyrate2024),
+              fillColor = ~paletteNum(statesmap1$pregnancyrate2024),
               label = ~stateLabels,
               labelOptions = labelOptions(
                 style = list(color = 'gray30'),
@@ -100,7 +63,8 @@ m <- leaflet() %>%
               )
   ) %>%
   addLegend(pal = paletteNum, 
-            values = states$pregnancyrate2024, 
+            values = statesmap1$pregnancyrate2024, 
             title = '<small> pregnancy rate </small>',
             position = 'bottomleft')
-m
+
+map
