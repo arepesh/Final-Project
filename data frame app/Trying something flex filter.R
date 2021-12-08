@@ -6,10 +6,10 @@ library(rgdal)
 birthratefilter <- read_csv("NationalAndStatePregnancy_PublicUse.csv") %>%
   dplyr::select("state", "year", "pregnancyrate2024" : "pregnancyrate3539") %>%
   filter(year >= 2000, state != "US" & state != "DC")
-birthratefilter <- rename(birthrate, "20_24" = "pregnancyrate2024")
-birthratefilter <- rename(birthrate, "25_29" = "pregnancyrate2529")
-birthratefilter <- rename(birthrate, "30_34" = "pregnancyrate3034")
-birthratefilter <- rename(birthrate, "35_39" = "pregnancyrate3539")
+birthratefilter <- rename(birthratefilter, "20_24" = "pregnancyrate2024")
+birthratefilter <- rename(birthratefilter, "25_29" = "pregnancyrate2529")
+birthratefilter <- rename(birthratefilter, "30_34" = "pregnancyrate3034")
+birthratefilter <- rename(birthratefilter, "35_39" = "pregnancyrate3539")
 
 pivotbirthrate <- birthratefilter %>%
   pivot_longer(!state:year, names_to = "group", values_to = "rate")
