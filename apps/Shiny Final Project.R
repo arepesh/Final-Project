@@ -5,10 +5,11 @@ library(rgdal)
 library(tidyverse)
 library(RColorBrewer)
 library(raster)
+library(here)
 
 
 #loading in the data
-birthrate <- read_csv(here::here("app/NationalAndStatePregnancy_PublicUse.csv")) %>%
+birthrate <- read_csv(here::here("apps/NationalAndStatePregnancy_PublicUse.csv")) %>%
   dplyr::select("state", "year", "pregnancyrate2024" : "pregnancyrate3539") %>%
   filter(year >= 2000, state != "US" & state != "DC")
 birthrate <- rename(birthrate, "Age20_24" = "pregnancyrate2024")
@@ -25,7 +26,7 @@ birthrate2 <- pivotbirthrate %>%
 birthrate3 <- birthrate2 %>%
   pivot_wider(names_from = age_year, values_from = rate)
 
-state <- shapefile(here::here("app/cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
+state <- shapefile(here::here("apps/cb_2019_us_state_5m/cb_2019_us_state_5m.shp"))
 
 #checking to see if both elements are names the same
 is.element(birthrate3$state, state$STUSPS) %>%
@@ -35,8 +36,7 @@ is.element(birthrate3$state, state$STUSPS) %>%
 statebirthrate <- merge(state, birthrate, by.x = 'STUSPS', by.y = 'state', all.x = FALSE, duplicateGeoms = TRUE)
 
 # Create palette
-pal <- colorBin("Purples", c(0, 250), na.color = "#808080",
-                alpha = FALSE, reverse = FALSE)
+pal2 <- colorNumeric(palette = "Purples", domain=NULL)
 
 #Shiny UI code
 
@@ -76,7 +76,7 @@ ui <- shinyUI(fluidPage(theme = shinytheme("united"),
 
 
 # SERVER
-server <- shinyServer(function(input, output) {
+server <- shinyServer(function(input, output, session) {
   output$map <- renderLeaflet({
     leaflet(statebirthrate) %>% 
       addProviderTiles(providers$Stamen.TonerLite) %>% 
@@ -114,7 +114,6 @@ server <- shinyServer(function(input, output) {
                                    "Age20_24_2017" = statebirthrate$Age20_24_2017, "Age25_29_2017" = statebirthrate$Age25_29_2017, "Age30_34_2017" = statebirthrate$Age30_34_2017, "Age35_39_2017" = statebirthrate$Age35_39_2017)
   })
   
-  pal2 <- colorNumeric(palette = "Purples", domain=NULL)
   
   output$map <- renderLeaflet({
     leaflet(statebirthrate) %>% 
@@ -125,8 +124,7 @@ server <- shinyServer(function(input, output) {
                                  statebirthrate$STUSPS),
                   color = "#BDBDC3",
                   fillOpacity = 0.8,
-                  weight = 1)
-  })
+                  weight = 1) })
   
   observeEvent(input$stateInput, {
     state_popup <- paste0("<strong> State: </strong>", 

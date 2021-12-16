@@ -41,7 +41,7 @@ ui <- shinyUI(fluidPage(
                                                     "Age25_29", 
                                                     "Age30_34", 
                                                     "Age35_39"),
-                                        selected = "Choose Age Group:"),),
+                                        selected = "Choose Age Group:")),
                           mainPanel(leafletOutput(outputId = 'map', height = 800) 
                           )
 )))
@@ -57,12 +57,13 @@ server <- shinyServer(function(input, output,session) {
     
   })
   
-  selectAge <- reactive({switch(input$ageInput,
+  selectAge <- reactive(switch(input$ageInput,
                                    "Age20_24" = statebirthrate$Age20_24, 
                                    "Age25_29" = statebirthrate$Age25_29, 
                                    "Age30_34" = statebirthrate$Age30_34,
                                    "Age35_39" = statebirthrate$Age35_39)
-  })
+  )
+  
   
   output$map <- renderLeaflet({
     leaflet(statebirthrate) %>% 

@@ -36,12 +36,13 @@ uifilter <- fluidPage(
 
 
 
-serverfilter <- function(input, output) {
-  
-  output$mytable = renderDataTable({
-    dt <- birthratefilter[birthratefilter$year == input$yearInput, ]
-    dt[, c("year", input$ageInput)]
+server <- function(input, output, session) {
+  choicevec1 <- reactive({
+    statebirthrate %>%
+      filter(year == input$year, group == input$agegroup ) 
   })
-  }
+  
+  output$mytable = renderDataTable({choicevec1()})
+}
 
 shinyApp(ui = uifilter, server = serverfilter)
