@@ -13,10 +13,10 @@ library(raster)
 birthratemap1 <- read_csv("NationalAndStatePregnancy_PublicUse.csv")
 
 birthratemap1 <- birthratemap1 %>%
-  dplyr::select("state", "year", "pregnancyrate2024") %>%
-  filter(year == 2000, state != "US" & state != "DC")
+  dplyr::select("state", "year", "pregnancyrate2024":"pregnancyrate3539") %>%
+  filter(year >= 2000, state != "US" & state != "DC")
 
-head(birthrate1)
+head(birthratemap1)
 
 #this is the shape file so that leaflet can read where the states are.
 
@@ -27,13 +27,13 @@ is.element(birthratemap1$state, statesmap1$STUSPS) %>%
   all()
 
 #merging the two data sets
-statesmap1 <- merge(statesmap1, birthratemap1, by.x = 'STUSPS', by.y = 'state', all.x = F)
+statesmap1 <- merge(statesmap1, birthratemap1, by.x = 'STUSPS', by.y = 'state', all.x = FALSE, duplicateGeoms = TRUE)
 
 #color for contunuout values
 paletteNum <- colorNumeric('Blues', domain = statesmap1$pregnancyrate2024)
 
 #making the color range
-costBins <- c(7:19, Inf)
+costBins <- c(0:250, Inf)
 paletteBinned <- colorBin('YlGnBu', domain = statesmap1$pregnancyrate2024, bins = costBins)
 
 #adding labels to the states
