@@ -11,6 +11,8 @@ birthratefilter <- rename(birthratefilter, "Age25_29" = "pregnancyrate2529")
 birthratefilter <- rename(birthratefilter, "Age30_34" = "pregnancyrate3034")
 birthratefilter <- rename(birthratefilter, "Age35_39" = "pregnancyrate3539")
 
+Pivot_Birth <- birthratefilter %>%
+  pivot_longer(!state:year, names_to = "Group", values_to = "Rate")
 
 uifilter <- fluidPage(
   sidebarLayout(
@@ -36,10 +38,10 @@ uifilter <- fluidPage(
 
 
 
-server <- function(input, output, session) {
+serverfilter <- function(input, output, session) {
   choicevec1 <- reactive({
-    statebirthrate %>%
-      filter(year == input$year, group == input$agegroup ) 
+    Pivot_Birth %>%
+      filter(year == input$yearInput, Group == input$ageInput ) 
   })
   
   output$mytable = renderDataTable({choicevec1()})
